@@ -2,7 +2,7 @@
 
 **Release:** `0.2.0` (plugin, server package metadata aligned)  
 **Prepared:** 2026-09-23 00:15 CDT  
-**Submission status:** **Not ready to submit yet** — the local package is ship-ready, but it still needs a public Git remote/repository URL.
+**Submission status:** **Ready to submit** — public repo: https://github.com/abhinav937/strava-mcp-connector (pushed `0.2.0` / `11d3e93`).
 
 ## Validation
 
@@ -56,10 +56,9 @@ There is currently **no Git repository or commit history in this checkout**, so 
 
 ## Public repository / GitHub status
 
-- Public git remote: **none**; `/workspace/strava-mcp-connector` is not initialized as a Git repository.
-- `gh auth status`: **not authenticated**.
-- Nothing was pushed and no public repository was created.
-- Still needed: create/choose a public open-source repository, initialize/commit this tree (excluding `server/.env`), push it, and record the final repository URL. Do that only with explicit go-ahead.
+- Public git remote: **https://github.com/abhinav937/strava-mcp-connector** (public, `main` @ `11d3e93`).
+- Owner: `abhinav937`.
+- Secrets: `server/.env` not committed; only `.env.example` shipped.
 
 ## Exact Cursor publish steps
 
