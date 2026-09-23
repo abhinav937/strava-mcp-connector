@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Strava MCP">
+  <rect width="128" height="128" rx="24" fill="#FC4C02"/>
+  <path fill="#FFFFFF" d="M36 88 L64 28 L76 52 L52 88 Z"/>
+  <path fill="#FFFFFF" opacity="0.85" d="M76 52 L88 28 L108 88 L84 88 L76 68 Z"/>
+</svg>

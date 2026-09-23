@@ -1,0 +1,33 @@
+[project]
+name = "strava-mcp-connector"
+version = "0.2.0"
+description = "Fetch-only Strava MCP connector: per-user API app + HTTP OAuth (requires Strava subscription)"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.12.4",
+    "httpx>=0.28.1",
+    "pydantic>=2.12.0",
+    "pydantic-settings>=2.11.0",
+    "python-dotenv>=1.1.1",
+]
+
+[project.optional-dependencies]
+http = [
+    "boto3>=1.34.0",
+    "mangum>=0.17.0",
+]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+strava-mcp-connector = "strava_mcp.cli:main"
+mcp-strava-connector = "strava_mcp.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["strava_mcp"]

@@ -1,0 +1,36 @@
+{
+  "name": "strava-mcp",
+  "version": "0.2.0",
+  "description": "Requires Strava Premium/Subscriber. Install → agent walks you through your own Strava API app + OAuth → fetch activities, routes, segments, athlete profile (no training analysis). Alternative to Strava’s official subscriber MCP.",
+  "author": {
+    "name": "Abhinav Chinnusamy"
+  },
+  "license": "MIT",
+  "keywords": [
+    "strava",
+    "fitness",
+    "running",
+    "cycling",
+    "mcp",
+    "oauth",
+    "activities"
+  ],
+  "logo": "assets/logo.svg",
+  "mcpServers": "./mcp.json",
+  "variables": {
+    "type": "object",
+    "properties": {
+      "STRAVA_CLIENT_ID": {
+        "type": "string",
+        "title": "Strava Client ID",
+        "description": "Client ID from YOUR Strava API application (https://www.strava.com/settings/api). Requires a Strava subscription for Standard Tier API access. There is no shared publisher app."
+      },
+      "STRAVA_CLIENT_SECRET": {
+        "type": "string",
+        "title": "Strava Client Secret",
+        "description": "Client Secret from YOUR Strava API application. Stored in plugin config only — never commit it."
+      }
+    },
+    "required": ["STRAVA_CLIENT_ID", "STRAVA_CLIENT_SECRET"]
+  }
+}

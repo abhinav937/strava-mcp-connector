@@ -1,0 +1,31 @@
+{
+  "name": "strava-mcp-marketplace",
+  "owner": {
+    "name": "Abhinav Chinnusamy"
+  },
+  "metadata": {
+    "description": "Fetch-only Strava MCP connector for Cursor using each user's own API app and OAuth.",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "strava-mcp",
+      "source": "plugin",
+      "description": "Requires Strava Premium/Subscriber. Guides each user through their own Strava API app and OAuth for fetch-only activity, route, segment, and athlete tools.",
+      "version": "0.2.0",
+      "author": {
+        "name": "Abhinav Chinnusamy"
+      },
+      "license": "MIT",
+      "keywords": [
+        "strava",
+        "fitness",
+        "running",
+        "cycling",
+        "mcp",
+        "oauth",
+        "activities"
+      ]
+    }
+  ]
+}
