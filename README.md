@@ -187,3 +187,8 @@ See [`plugin/`](./plugin/) for the marketplace scaffold:
 ## Attribution
 
 Portions © Edd Mann (eddmann/strava-mcp). Fetch-only Cursor packaging © Abhinav Chinnusamy / Austin Half Trainer contributors. MIT — see [`LICENSE`](./LICENSE).
+
+## Running under the legacy `mcp-strava` command
+
+Hosts registered as `uv tool uvx mcp-strava` can be switched without re-registration by installing
+the `compat/mcp-strava` shim (stdio by default). See [SWITCH.md](SWITCH.md).
