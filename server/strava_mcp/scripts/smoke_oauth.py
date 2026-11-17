@@ -155,7 +155,7 @@ def _which(name: str) -> str | None:
     return which(name)
 
 
-def _run_flow(*, mcp_origin: str, base: str) -> int:
+def _run_flow(*, mcp_origin: str, base: str) -> str:
     """Register temp client, open Approve on bot, capture callback, return athlete_id."""
     listen_port = _free_port()
     redirect_uri = f"http://127.0.0.1:{listen_port}{CALLBACK_PATH}"
@@ -279,7 +279,9 @@ def _run_flow(*, mcp_origin: str, base: str) -> int:
         if athlete_id is None:
             print("ERROR: athlete_id missing from session.", file=sys.stderr)
             sys.exit(1)
-        return int(athlete_id)
+        from strava_mcp.ids import as_str_id
+
+        return as_str_id(athlete_id)
     finally:
         httpd.shutdown()
 

@@ -1,8 +1,8 @@
 # Strava MCP Connector — ship checklist
 
-**Release:** `0.2.0` (plugin, server package metadata aligned)  
-**Prepared:** 2026-09-23 00:15 CDT  
-**Submission status:** **Ready to submit** — public repo: https://github.com/abhinav937/strava-mcp-connector (pushed `0.2.0` / `11d3e93`).
+**Release:** `0.2.1` (plugin, server package metadata aligned)  
+**Prepared:** 2026-09-23 00:15 CDT; 0.2.1 follow-up 2026-11-17 IST  
+**Submission status:** public repo: https://github.com/abhinav937/strava-mcp-connector. `0.2.0` was the marketplace-ready snapshot (`11d3e93`). `0.2.1` is a patch for 64-bit Activity/Athlete IDs (`id_str` / string IDs in tool I/O). This patch is not a marketplace publish.
 
 ## Validation
 

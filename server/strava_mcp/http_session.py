@@ -28,6 +28,7 @@ from pydantic import AnyHttpUrl, AnyUrl, ValidationError, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from .env import get_env_files
+from .ids import entity_id, optional_str_id
 from .models import TokenResponse
 
 # Type aliases for OAuth provider
@@ -128,7 +129,7 @@ class StravaSession:
     created_at: datetime
     updated_at: datetime
     session_expires_at: datetime
-    athlete_id: int | None = None
+    athlete_id: str | None = None
     athlete_name: str | None = None
     athlete: dict[str, Any] | None = None
     mcp_token: str | None = None
@@ -272,7 +273,7 @@ class SessionStore:
 
         expires_at = datetime.fromtimestamp(token_data.expires_at, tz=UTC)
         athlete = token_data.athlete.model_dump(mode="json") if token_data.athlete else None
-        athlete_id = token_data.athlete.id if token_data.athlete else None
+        athlete_id = entity_id(token_data.athlete)
         athlete_name = (
             f"{token_data.athlete.firstname} {token_data.athlete.lastname}".strip()
             if token_data.athlete
@@ -311,7 +312,7 @@ class SessionStore:
             session.session_expires_at = max(session.session_expires_at, now + SESSION_TTL)
             if token_data.athlete:
                 session.athlete = token_data.athlete.model_dump(mode="json")
-                session.athlete_id = token_data.athlete.id
+                session.athlete_id = entity_id(token_data.athlete)
                 session.athlete_name = (
                     f"{token_data.athlete.firstname} {token_data.athlete.lastname}".strip()
                     or session.athlete_name
@@ -681,7 +682,7 @@ class DynamoSessionStore(SessionStore):
             updated_at=self._deserialize_datetime(data["updated_at"]),
             session_expires_at=self._deserialize_datetime(data["session_expires_at"]),
             athlete=data.get("athlete"),
-            athlete_id=data.get("athlete_id"),
+            athlete_id=optional_str_id(data.get("athlete_id")),
             athlete_name=data.get("athlete_name"),
         )
         session.mcp_token = data.get("mcp_token")
@@ -1272,7 +1273,7 @@ class HttpStravaAuthContext:
         return self.session.session_id
 
     @property
-    def athlete_id(self) -> int | None:
+    def athlete_id(self) -> str | None:
         return self.session.athlete_id
 
     @property

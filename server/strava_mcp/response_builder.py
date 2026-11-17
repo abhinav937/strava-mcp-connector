@@ -21,6 +21,7 @@ from .formatters import (
     format_pace,
     format_speed,
 )
+from .ids import entity_id
 from .models import MeasurementPreference
 from .pagination import PaginationInfo
 
@@ -165,7 +166,7 @@ class ResponseBuilder:
             Dict with nested structure containing raw and formatted values
         """
         formatted: dict[str, Any] = {
-            "id": activity.get("id"),
+            "id": entity_id(activity),
             "name": activity.get("name"),
             "type": activity.get("type"),
             "sport_type": activity.get("sport_type"),

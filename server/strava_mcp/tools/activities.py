@@ -8,6 +8,7 @@ from typing import Annotated, Any
 from fastmcp import Context
 
 from ..client import StravaAPIError, StravaClient
+from ..ids import EntityId, as_str_id, entity_id
 from ..models import ActivityType, MeasurementPreference
 from ..response_builder import ResponseBuilder
 from ..time_utils import TimeRangePreset, get_range_description, parse_time_range
@@ -22,7 +23,10 @@ async def query_activities(
     activity_type: Annotated[
         ActivityType | None, "Filter by activity type (e.g., 'Run', 'Ride', 'Swim')"
     ] = None,
-    activity_id: Annotated[int | None, "Get specific activity by ID"] = None,
+    activity_id: Annotated[
+        EntityId | None,
+        "Get a specific activity by ID. Prefer the string form (id_str). Numeric IDs still work.",
+    ] = None,
     distance: Annotated[
         str | None,
         "Filter by distance. Formats: race name ('5k', 'marathon'), "
@@ -90,8 +94,8 @@ async def query_activities(
     Examples:
         - Get recent activities: query_activities()
         - Get last 7 days: query_activities(time_range="7d")
-        - Get specific activity: query_activities(activity_id=12345)
-        - Get with laps and zones: query_activities(activity_id=12345, include_laps=True, include_zones=True)
+        - Get specific activity: query_activities(activity_id="12345")
+        - Get with laps and zones: query_activities(activity_id="12345", include_laps=True, include_zones=True)
         - Get runs from last month: query_activities(time_range="30d", activity_type="Run")
         - Paginate large results: query_activities(time_range="ytd", cursor="eyJwYWdl...")
     """
@@ -125,6 +129,13 @@ async def query_activities(
     try:
         # Single activity mode
         if activity_id is not None:
+            try:
+                activity_id = as_str_id(activity_id)
+            except ValueError as e:
+                return ResponseBuilder.build_error_response(
+                    str(e),
+                    error_type="validation_error",
+                )
             return await _get_single_activity(
                 client,
                 activity_id,
@@ -177,7 +188,7 @@ async def query_activities(
 
 async def _get_single_activity(
     client: StravaClient,
-    activity_id: int,
+    activity_id: str,
     include_streams: str | None,
     include_laps: bool,
     include_zones: bool,
@@ -438,7 +449,10 @@ async def _list_activities(
 
 
 async def get_activity_social(
-    activity_id: Annotated[int, "Activity ID"],
+    activity_id: Annotated[
+        EntityId,
+        "Activity ID. Prefer the string form (id_str). Numeric IDs still work.",
+    ],
     include_comments: Annotated[bool, "Include comments"] = True,
     include_kudos: Annotated[bool, "Include kudos"] = True,
     unit: Annotated[MeasurementPreference, "Unit preference ('meters' or 'feet')"] = "meters",
@@ -458,7 +472,7 @@ async def get_activity_social(
         },
         "metadata": {
             "fetched_at": "ISO timestamp",
-            "activity_id": N
+            "activity_id": "..."
         }
     }
     """
@@ -466,12 +480,13 @@ async def get_activity_social(
     client: StravaClient = await ctx.get_state("client")
 
     try:
+        activity_id = as_str_id(activity_id)
         # Get basic activity info
         activity = await client.get_activity(activity_id)
 
         data: dict[str, Any] = {
             "activity": {
-                "id": activity.id,
+                "id": entity_id(activity),
                 "name": activity.name,
                 "type": activity.type,
             }
@@ -484,7 +499,7 @@ async def get_activity_social(
                 {
                     "id": comment.id,
                     "athlete": {
-                        "id": comment.athlete.id if comment.athlete else None,
+                        "id": entity_id(comment.athlete),
                         "name": f"{comment.athlete.firstname} {comment.athlete.lastname}"
                         if comment.athlete
                         else None,
@@ -500,7 +515,7 @@ async def get_activity_social(
             kudos = await client.get_activity_kudoers(activity_id)
             data["kudos"] = [
                 {
-                    "id": kudoer.id,
+                    "id": entity_id(kudoer),
                     "name": f"{kudoer.firstname} {kudoer.lastname}",
                 }
                 for kudoer in kudos
@@ -519,6 +534,11 @@ async def get_activity_social(
 
         return ResponseBuilder.build_response(data, metadata=metadata)
 
+    except ValueError as e:
+        return ResponseBuilder.build_error_response(
+            str(e),
+            error_type="validation_error",
+        )
     except StravaAPIError as e:
         error_type = "api_error"
         suggestions = []

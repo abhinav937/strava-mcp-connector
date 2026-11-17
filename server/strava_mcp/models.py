@@ -71,16 +71,25 @@ class MetaAthlete(BaseModel):
 
     Note: id may be None in some API responses (e.g., kudos/comments)
     when athletes have privacy settings enabled.
+
+    Prefer `id_str` (or stringify `id`) when exposing IDs. After June 1, 2027
+    Strava may return 64-bit athlete IDs that are unsafe as JSON numbers in JS.
     """
 
     id: int | None = None
+    id_str: str | None = None
     resource_state: int | None = None
 
 
 class MetaActivity(BaseModel):
-    """Minimal activity representation in other resources."""
+    """Minimal activity representation in other resources.
+
+    Prefer `id_str` (or stringify `id`) when exposing IDs. After June 1, 2027
+    Strava may return 64-bit activity IDs that are unsafe as JSON numbers in JS.
+    """
 
     id: int
+    id_str: str | None = None
     resource_state: int | None = None
 
 

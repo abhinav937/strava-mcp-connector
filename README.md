@@ -96,6 +96,12 @@ strava-mcp-connector/
 
 Full table: [`SCOPE.md`](./SCOPE.md).
 
+## Activity and athlete IDs
+
+After June 1, 2027, Strava may return 64-bit Activity and Athlete IDs. The API also includes `id_str`, and this connector uses that (falling back to a string form of `id`) so JavaScript clients do not lose precision.
+
+Tool outputs expose these IDs as strings. Tool inputs such as `query_activities(activity_id=...)` accept the string form and still accept numeric IDs for backward compatibility. See [`CHANGELOG.md`](./CHANGELOG.md) for 0.2.1.
+
 ## Environment
 
 Copy [`.env.example`](./.env.example) to `server/.env` (or `~/.strava-mcp-connector.env`). **You** supply Client ID + Secret from your Strava API app. Never commit secrets.

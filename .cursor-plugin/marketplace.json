@@ -5,14 +5,14 @@
   },
   "metadata": {
     "description": "Fetch-only Strava MCP connector for Cursor using each user's own API app and OAuth.",
-    "version": "0.2.0"
+    "version": "0.2.1"
   },
   "plugins": [
     {
       "name": "strava-mcp",
       "source": "plugin",
       "description": "Requires Strava Premium/Subscriber. Guides each user through their own Strava API app and OAuth for fetch-only activity, route, segment, and athlete tools.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "Abhinav Chinnusamy"
       },

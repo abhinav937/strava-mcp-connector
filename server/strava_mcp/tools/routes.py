@@ -8,6 +8,7 @@ from typing import Annotated, Any, Literal
 from fastmcp import Context
 
 from ..client import StravaAPIError, StravaClient
+from ..ids import entity_id
 from ..models import MeasurementPreference
 from ..response_builder import ResponseBuilder
 
@@ -111,7 +112,7 @@ async def _get_single_route(
         "id": route.id,
         "name": route.name,
         "description": route.description,
-        "athlete_id": route.athlete.id if route.athlete else None,
+        "athlete_id": entity_id(route.athlete),
         "distance": {
             "meters": route.distance,
             "formatted": f"{route.distance / 1000:.2f} km"

@@ -7,6 +7,7 @@ from typing import Any, Literal, Protocol
 import httpx
 from pydantic import TypeAdapter
 
+from .ids import EntityId, as_str_id, entity_id
 from .models import (
     ActivityZone,
     Athlete,
@@ -285,18 +286,21 @@ class StravaClient:
 
         return (filtered_results, is_exhausted)
 
-    async def get_activity(self, activity_id: int) -> DetailedActivity:
+    async def get_activity(self, activity_id: EntityId) -> DetailedActivity:
         """Get detailed information about a specific activity."""
+        activity_id = as_str_id(activity_id)
         response = await self._request("GET", f"/activities/{activity_id}")
+        # httpx uses Python json.loads, which keeps 64-bit IDs exact.
         return DetailedActivity(**response.json())
 
     async def get_activity_streams(
         self,
-        activity_id: int,
+        activity_id: EntityId,
         keys: list[str] | None = None,
         key_by_type: bool = True,
     ) -> dict[str, Any]:
         """Get activity streams (time-series data)."""
+        activity_id = as_str_id(activity_id)
         if keys is None:
             keys = [
                 "time",
@@ -322,25 +326,28 @@ class StravaClient:
         )
         return response.json()
 
-    async def get_activity_laps(self, activity_id: int) -> list[Lap]:
+    async def get_activity_laps(self, activity_id: EntityId) -> list[Lap]:
         """Get laps for a specific activity."""
+        activity_id = as_str_id(activity_id)
         response = await self._request("GET", f"/activities/{activity_id}/laps")
         adapter = TypeAdapter(list[Lap])
         return adapter.validate_python(response.json())
 
-    async def get_activity_zones(self, activity_id: int) -> list[ActivityZone]:
+    async def get_activity_zones(self, activity_id: EntityId) -> list[ActivityZone]:
         """Get zones for a specific activity."""
+        activity_id = as_str_id(activity_id)
         response = await self._request("GET", f"/activities/{activity_id}/zones")
         adapter = TypeAdapter(list[ActivityZone])
         return adapter.validate_python(response.json())
 
     async def get_activity_comments(
         self,
-        activity_id: int,
+        activity_id: EntityId,
         page: int = 1,
         per_page: int = 30,
     ) -> list[Comment]:
         """Get comments for a specific activity."""
+        activity_id = as_str_id(activity_id)
         response = await self._request(
             "GET",
             f"/activities/{activity_id}/comments",
@@ -351,11 +358,12 @@ class StravaClient:
 
     async def get_activity_kudoers(
         self,
-        activity_id: int,
+        activity_id: EntityId,
         page: int = 1,
         per_page: int = 30,
     ) -> list[SummaryAthlete]:
         """Get athletes who gave kudos to a specific activity."""
+        activity_id = as_str_id(activity_id)
         response = await self._request(
             "GET",
             f"/activities/{activity_id}/kudos",
@@ -371,8 +379,9 @@ class StravaClient:
         response = await self._request("GET", "/athlete")
         return Athlete(**response.json())
 
-    async def get_athlete_stats(self, athlete_id: int) -> AthleteStats:
+    async def get_athlete_stats(self, athlete_id: EntityId) -> AthleteStats:
         """Get stats for a specific athlete."""
+        athlete_id = as_str_id(athlete_id)
         response = await self._request("GET", f"/athletes/{athlete_id}/stats")
         return AthleteStats(**response.json())
 
@@ -495,7 +504,7 @@ class StravaClient:
 
     async def list_athlete_routes(
         self,
-        athlete_id: int | None = None,
+        athlete_id: EntityId | None = None,
         page: int = 1,
         per_page: int = 30,
     ) -> list[Route]:
@@ -503,7 +512,11 @@ class StravaClient:
         if athlete_id is None:
             # Get current athlete's ID
             athlete = await self.get_athlete()
-            athlete_id = athlete.id
+            athlete_id = entity_id(athlete)
+            if athlete_id is None:
+                raise StravaAPIError("Athlete ID is required to list routes")
+        else:
+            athlete_id = as_str_id(athlete_id)
 
         response = await self._request(
             "GET",

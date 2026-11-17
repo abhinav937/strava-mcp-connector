@@ -8,6 +8,7 @@ from typing import Annotated, Any, Literal
 from fastmcp import Context
 
 from ..client import StravaAPIError, StravaClient
+from ..ids import entity_id
 from ..models import MeasurementPreference
 from ..response_builder import ResponseBuilder
 
@@ -72,8 +73,9 @@ async def get_athlete_profile(
         athlete = await client.get_athlete()
 
         # Build profile data
+        athlete_id = entity_id(athlete)
         profile_data = {
-            "id": athlete.id,
+            "id": athlete_id,
             "name": f"{athlete.firstname} {athlete.lastname}",
             "username": athlete.username,
             "location": {
@@ -145,12 +147,12 @@ async def get_athlete_profile(
 
         # Add statistics if requested
         if include_stats:
-            if athlete.id is None:
+            if athlete_id is None:
                 return ResponseBuilder.build_error_response(
                     "Athlete ID is required to fetch statistics",
                     error_type="invalid_data",
                 )
-            stats = await client.get_athlete_stats(athlete.id)
+            stats = await client.get_athlete_stats(athlete_id)
 
             statistics = {}
 

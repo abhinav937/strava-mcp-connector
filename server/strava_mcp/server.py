@@ -103,18 +103,21 @@ def create_server(transport_mode: str = "http") -> FastMCP:
 
         try:
             athlete = await client.get_athlete()
-            if athlete.id is None:
+            from .ids import entity_id
+
+            athlete_id = entity_id(athlete)
+            if athlete_id is None:
                 return ResponseBuilder.build_error_response(
                     "Athlete ID not available",
                     error_type="invalid_data",
                 )
 
-            stats = await client.get_athlete_stats(athlete.id)
+            stats = await client.get_athlete_stats(athlete_id)
             zones = await client.get_athlete_zones()
 
             data = {
                 "profile": {
-                    "id": athlete.id,
+                    "id": athlete_id,
                     "name": f"{athlete.firstname} {athlete.lastname}",
                     "location": {
                         "city": athlete.city,
@@ -155,15 +158,15 @@ def create_server(transport_mode: str = "http") -> FastMCP:
 3. Summarize distance, elevation, my efforts, and leaderboard position"""
 
     @mcp.prompt()
-    async def activity_overview(activity_id: int) -> str:  # type: ignore[reportUnusedFunction]
+    async def activity_overview(activity_id: str | int) -> str:  # type: ignore[reportUnusedFunction]
         """Fetch a single activity with optional laps/zones/streams.
 
         Args:
-            activity_id: The ID of the activity to fetch
+            activity_id: The ID of the activity to fetch (string preferred)
         """
         return f"""Fetch Strava activity {activity_id}.
 
-Use query_activities with activity_id={activity_id}, include_laps=true,
+Use query_activities with activity_id="{activity_id}", include_laps=true,
 include_zones=true. Optionally include streams if detailed series data is needed.
 Present the raw metrics clearly (distance, time, pace/speed, HR, elevation)."""
 

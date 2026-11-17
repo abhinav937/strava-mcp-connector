@@ -1,6 +1,6 @@
 {
   "name": "strava-mcp",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Requires Strava Premium/Subscriber. Install → agent walks you through your own Strava API app + OAuth → fetch activities, routes, segments, athlete profile (no training analysis). Alternative to Strava’s official subscriber MCP.",
   "author": {
     "name": "Abhinav Chinnusamy"

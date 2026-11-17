@@ -8,6 +8,7 @@ from typing import Annotated, Any, Literal
 from fastmcp import Context
 
 from ..client import StravaAPIError, StravaClient
+from ..ids import entity_id
 from ..models import MeasurementPreference
 from ..response_builder import ResponseBuilder
 
@@ -230,7 +231,7 @@ async def _get_single_segment(
                 "start_date": ResponseBuilder.format_date_with_day(effort.start_date_local)
                 if effort.start_date_local
                 else None,
-                "activity_id": effort.activity.id if effort.activity else None,
+                "activity_id": entity_id(effort.activity),
             }
             for effort in efforts[:limit]
         ]

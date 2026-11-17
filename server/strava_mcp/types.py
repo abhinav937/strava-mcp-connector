@@ -102,7 +102,7 @@ class ErrorResponse(TypedDict):
 class FormattedActivityData(TypedDict, total=False):
     """Formatted activity data structure."""
 
-    id: int
+    id: str
     name: str
     type: str
     sport_type: str
@@ -188,7 +188,7 @@ class FormattedRouteData(TypedDict, total=False):
 class FormattedAthleteProfile(TypedDict, total=False):
     """Formatted athlete profile structure."""
 
-    id: int
+    id: str
     username: str
     firstname: str
     lastname: str
